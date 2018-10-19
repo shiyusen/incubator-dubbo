@@ -29,8 +29,17 @@ import org.apache.dubbo.config.spring.ServiceBean;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
+ * 解析dubbo标签，转化为bean
  * DubboNamespaceHandler
- *
+ *这个类继承了NamespaceHandlerSupport
+ * 他有个顶级接口NamespaceHandler,parse和decorate方法在NamespaceHandlerSupport中已有实现,
+ * 这时候DubboNamespaceHandler实现了init方法,并做了一个版本号的容错的检查,是一个静态块。
+ * 这个类的目的是解析dubbo的标签,
+ * 当spring容器在启动时会掉用到DubboNamespaceHandler中的init方法,
+ * 通过查看源码阔以发现对标签中的bean的处理是通过DubboBeanDefinitionParser来处理的,
+ * 这个类实现了BeanDefinitionParser接口重写了pase方法在pase中调用了一个静态的pase方法去做处理。
+ * 通过在构造中传入不同的参数来解析不同的Dubbo标签。
+ * 到此为止将xml转换为spring的bean定义的操作已经结束了
  * @export
  */
 public class DubboNamespaceHandler extends NamespaceHandlerSupport {

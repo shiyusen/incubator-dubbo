@@ -28,6 +28,9 @@ import org.springframework.context.ApplicationContext;
 
 /**
  * SpringExtensionFactory
+ * 从spring容器中获取bean实例的工厂类
+ * 1.先按name
+ * 2.再按type
  */
 public class SpringExtensionFactory implements ExtensionFactory {
     private static final Logger logger = LoggerFactory.getLogger(SpringExtensionFactory.class);

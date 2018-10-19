@@ -46,7 +46,8 @@ import java.util.Map;
  *
  * @export
  */
-public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean, DisposableBean, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>, BeanNameAware {
+public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean, DisposableBean, ApplicationContextAware,
+        ApplicationListener<ContextRefreshedEvent>, BeanNameAware {
 
     private static final long serialVersionUID = 213195494150089726L;
 
@@ -74,13 +75,22 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
         return SPRING_CONTEXT;
     }
 
+    /**
+     * 实现ApplicationContextAware 获得spring容器上下文 applicationContext
+     * @param applicationContext
+     */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
+        //记录spring上下文，会有多个？分别是什么？
         SpringExtensionFactory.addApplicationContext(applicationContext);
         if (applicationContext != null) {
             SPRING_CONTEXT = applicationContext;
             try {
+                /**
+                 * 调用applicationContext.addApplicationListener(ApplicationListener application)的监听事件
+                 * applicationContext接口本身并没有该方法，但其实现类有可能有
+                 */
                 Method method = applicationContext.getClass().getMethod("addApplicationListener", ApplicationListener.class); // backward compatibility to spring 2.0.1
                 method.invoke(applicationContext, this);
                 supportedApplicationListener = true;
@@ -100,6 +110,10 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
         }
     }
 
+    /**
+     * 实现BeanNameAware，通过这个Bean可以获取到自己在容器中的名字
+     * @param name
+     */
     @Override
     public void setBeanName(String name) {
         this.beanName = name;
@@ -114,12 +128,19 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
         return service;
     }
 
+    /**
+     * 实现ApplicationListener ，监听所用通过applicationContext.publistEvent(ApplicationEvent event))发布的事件
+     * 在spring启动时bean初始化完成时会调用publistEvent发布事件,只要是实现了ApplicationListener接口的类都可以接收到事件并作出响应
+     * @param event
+     */
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        // //判断是否已经发布
         if (isDelay() && !isExported() && !isUnexported()) {
             if (logger.isInfoEnabled()) {
                 logger.info("The service ready on spring started. service: " + getInterface());
             }
+            //暴漏
             export();
         }
     }
@@ -133,6 +154,14 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
         return supportedApplicationListener && (delay == null || delay == -1);
     }
 
+    /**
+     * 实现InitializingBean，在类实例化结束后调用该方法
+     * Springbean的创建和销毁大概有三种方式:
+     * ①一种是通过注解指定@PostConstruct 和 @PreDestroy 方法
+     * ②如果是xml则可以指定init-method和destory-method
+     * ③则是通过实现两个接口来实现InitializingBean,DisposableBean。
+     * @throws Exception
+     */
     @Override
     @SuppressWarnings({"unchecked", "deprecation"})
     public void afterPropertiesSet() throws Exception {
@@ -265,6 +294,10 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
         }
     }
 
+    /**
+     * 实现DisposableBean，销毁
+     * @throws Exception
+     */
     @Override
     public void destroy() throws Exception {
         // This will only be called for singleton scope bean, and expected to be called by spring shutdown hook when BeanFactory/ApplicationContext destroys.
