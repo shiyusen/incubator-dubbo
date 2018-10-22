@@ -43,7 +43,8 @@ import java.util.Map;
 
 /**
  * ServiceFactoryBean
- *
+ * 服务配置入口
+ * 提取dubbo里的所有配置，发布服务入口
  * @export
  */
 public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean, DisposableBean, ApplicationContextAware,
@@ -135,7 +136,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
      */
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        // //判断是否已经发布
+        //判断是否已经发布
         if (isDelay() && !isExported() && !isUnexported()) {
             if (logger.isInfoEnabled()) {
                 logger.info("The service ready on spring started. service: " + getInterface());

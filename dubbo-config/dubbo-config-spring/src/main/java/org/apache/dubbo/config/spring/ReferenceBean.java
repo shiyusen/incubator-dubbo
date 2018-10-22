@@ -38,7 +38,7 @@ import java.util.Map;
 
 /**
  * ReferenceFactoryBean
- *
+ * 消费者配置入口reference
  * @export
  */
 public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean, ApplicationContextAware, InitializingBean, DisposableBean {
@@ -81,6 +81,9 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
     @SuppressWarnings({"unchecked"})
     public void afterPropertiesSet() throws Exception {
         if (getConsumer() == null) {
+            /**
+             * 如果消费者配置为null，则从BeanFactoryUtils.beansOfTypeIncludingAncestors进行提取
+             */
             Map<String, ConsumerConfig> consumerConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ConsumerConfig.class, false, false);
             if (consumerConfigMap != null && consumerConfigMap.size() > 0) {
                 ConsumerConfig consumerConfig = null;
@@ -97,6 +100,9 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
                 }
             }
         }
+        /**
+         * ApplicationConfig is null && can not get ApplicationConfig from consumerConfig,then get ApplicationConfig from BeanFactoryUtils.beansOfTypeIncludingAncestors
+         */
         if (getApplication() == null
                 && (getConsumer() == null || getConsumer().getApplication() == null)) {
             Map<String, ApplicationConfig> applicationConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ApplicationConfig.class, false, false);
@@ -115,6 +121,9 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
                 }
             }
         }
+        /**
+         * ModuleConfig is null && can not get ModuleConfig from consumerConfig,then get ModuleConfig from BeanFactoryUtils.beansOfTypeIncludingAncestors
+         */
         if (getModule() == null
                 && (getConsumer() == null || getConsumer().getModule() == null)) {
             Map<String, ModuleConfig> moduleConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ModuleConfig.class, false, false);
@@ -133,6 +142,9 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
                 }
             }
         }
+        /**
+         * RegistryConfig is null && can not get RegistryConfig from consumerConfig,then get RegistryConfig from BeanFactoryUtils.beansOfTypeIncludingAncestors
+         */
         if ((getRegistries() == null || getRegistries().isEmpty())
                 && (getConsumer() == null || getConsumer().getRegistries() == null || getConsumer().getRegistries().isEmpty())
                 && (getApplication() == null || getApplication().getRegistries() == null || getApplication().getRegistries().isEmpty())) {
@@ -149,6 +161,9 @@ public class ReferenceBean<T> extends ReferenceConfig<T> implements FactoryBean,
                 }
             }
         }
+        /**
+         * MonitorConfig is null && can not get MonitorConfig from consumerConfig,then get MonitorConfig from BeanFactoryUtils.beansOfTypeIncludingAncestors
+         */
         if (getMonitor() == null
                 && (getConsumer() == null || getConsumer().getMonitor() == null)
                 && (getApplication() == null || getApplication().getMonitor() == null)) {
