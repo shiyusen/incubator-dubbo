@@ -166,11 +166,22 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
     @SuppressWarnings({"unchecked", "deprecation"})
     public void afterPropertiesSet() throws Exception {
         if (getProvider() == null) {
+            /**
+             * 如果提供者为null，而上下文不为null，则尝试通过BeanFactoryUtils.beansOfTypeIncludingAncestors的方式来获取服务提供者
+             * BeanFactoryUtils.beansOfTypeIncludingAncestors 搜集了实现MarkedBizBean接口的类
+             * TODO 石玉森 实现MarkedBizBean接口的类，是在什么时候被加载到spring容器的？
+             */
             Map<String, ProviderConfig> providerConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProviderConfig.class, false, false);
             if (providerConfigMap != null && providerConfigMap.size() > 0) {
+                /**
+                 * 如果用当前方式获取了provider，则继续用此方式获取protocol
+                 */
                 Map<String, ProtocolConfig> protocolConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProtocolConfig.class, false, false);
-                if ((protocolConfigMap == null || protocolConfigMap.size() == 0)
-                        && providerConfigMap.size() > 1) { // backward compatibility
+                if ((protocolConfigMap == null || protocolConfigMap.size() == 0) && providerConfigMap.size() > 1) { // backward compatibility
+                    /**
+                     * 提取配置为缺省协议的provider
+                     * provider.default是否为缺省协议，用于多协议
+                     */
                     List<ProviderConfig> providerConfigs = new ArrayList<ProviderConfig>();
                     for (ProviderConfig config : providerConfigMap.values()) {
                         if (config.isDefault() != null && config.isDefault()) {
@@ -181,6 +192,10 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                         setProviders(providerConfigs);
                     }
                 } else {
+                    /**
+                     * 如果找不到protocol，则判断provider里是否有且只有一个默认的协议
+                     * 如果没有显示的注入protocol，则要么有一个null，或者一个true；不能同时出现多个null或true
+                     */
                     ProviderConfig providerConfig = null;
                     for (ProviderConfig config : providerConfigMap.values()) {
                         if (config.isDefault() == null || config.isDefault()) {
@@ -196,6 +211,10 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 }
             }
         }
+        /**
+         * 如果ApplicationConfig为null或者从provider里也提取不出
+         * 则尝试用BeanFactoryUtils.beansOfTypeIncludingAncestors获取ApplicationConfig配置
+         */
         if (getApplication() == null
                 && (getProvider() == null || getProvider().getApplication() == null)) {
             Map<String, ApplicationConfig> applicationConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ApplicationConfig.class, false, false);
@@ -214,6 +233,10 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 }
             }
         }
+        /**
+         * 如果ModuleConfig为null或者从provider里也提取不出
+         * 则尝试用BeanFactoryUtils.beansOfTypeIncludingAncestors获取ModuleConfig配置
+         */
         if (getModule() == null
                 && (getProvider() == null || getProvider().getModule() == null)) {
             Map<String, ModuleConfig> moduleConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ModuleConfig.class, false, false);
@@ -232,6 +255,10 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 }
             }
         }
+        /**
+         * 如果RegistryConfig为null或者从provider里也提取不出
+         * 则尝试用BeanFactoryUtils.beansOfTypeIncludingAncestors获取RegistryConfig配置
+         */
         if ((getRegistries() == null || getRegistries().isEmpty())
                 && (getProvider() == null || getProvider().getRegistries() == null || getProvider().getRegistries().isEmpty())
                 && (getApplication() == null || getApplication().getRegistries() == null || getApplication().getRegistries().isEmpty())) {
@@ -248,6 +275,10 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 }
             }
         }
+        /**
+         * 如果MonitorConfig为null或者从provider里也提取不出
+         * 则尝试用BeanFactoryUtils.beansOfTypeIncludingAncestors获取MonitorConfig配置
+         */
         if (getMonitor() == null
                 && (getProvider() == null || getProvider().getMonitor() == null)
                 && (getApplication() == null || getApplication().getMonitor() == null)) {
@@ -267,6 +298,10 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                 }
             }
         }
+        /**
+         * 如果ProtocolConfig为null或者从provider里也提取不出
+         * 则尝试用BeanFactoryUtils.beansOfTypeIncludingAncestors获取ProtocolConfig配置
+         */
         if ((getProtocols() == null || getProtocols().isEmpty())
                 && (getProvider() == null || getProvider().getProtocols() == null || getProvider().getProtocols().isEmpty())) {
             Map<String, ProtocolConfig> protocolConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProtocolConfig.class, false, false);
