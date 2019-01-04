@@ -25,6 +25,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 /**
  * An application listener that listens the ContextClosedEvent.
  * Upon the event, this listener will do the necessary clean up to avoid memory leak.
+ *
+ * 在SpringContainer里实例化
  */
 public class DubboApplicationListener implements ApplicationListener<ApplicationEvent> {
 
@@ -38,6 +40,10 @@ public class DubboApplicationListener implements ApplicationListener<Application
         this.dubboBootstrap = dubboBootstrap;
     }
 
+    /**
+     * spring 容器启动后调用
+     * @param applicationEvent
+     */
     @Override
     public void onApplicationEvent(ApplicationEvent applicationEvent) {
         if (applicationEvent instanceof ContextRefreshedEvent) {

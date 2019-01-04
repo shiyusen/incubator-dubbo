@@ -53,7 +53,8 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * AnnotationBean
- *
+ * 注册配置入口
+ * TODO shiyusen 为什么不建议使用？改变入口方式了？新的在哪？
  * @export
  */
 @Deprecated
@@ -83,6 +84,16 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
         this.applicationContext = applicationContext;
     }
 
+    /**
+     * 此方法实现了BeanFactoryPostProcessor接口
+     * BeanFactoryPostProcessor 和 BeanPostProcessor的学习参考-->
+     * https://www.cnblogs.com/sishang/p/6588542.html
+     * http://www.cnblogs.com/sishang/p/6576665.html
+     * 此方法的调用postProcessBeanFactory--> postProcessBeforeInitialization ---->afterPropertiesSet---->postProcessAfterInitialization
+     * @param beanFactory
+     * @throws BeansException
+     */
+
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
             throws BeansException {
@@ -91,6 +102,10 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
         }
         if (beanFactory instanceof BeanDefinitionRegistry) {
             try {
+                /**
+                 * 提取被注解的bean
+                 * TODO 石玉森 查看spring注解的实现原理
+                 */
                 // init scanner
                 Class<?> scannerClass = ReflectUtils.forName("org.springframework.context.annotation.ClassPathBeanDefinitionScanner");
                 Object scanner = scannerClass.getConstructor(new Class<?>[]{BeanDefinitionRegistry.class, boolean.class}).newInstance((BeanDefinitionRegistry) beanFactory, true);
@@ -138,12 +153,14 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
         if (!isMatchPackage(bean)) {
             return bean;
         }
+        /**
+         *
+         */
         Service service = bean.getClass().getAnnotation(Service.class);
         if (service != null) {
             ServiceBean<Object> serviceConfig = new ServiceBean<Object>(service);
             serviceConfig.setRef(bean);
-            if (void.class.equals(service.interfaceClass())
-                    && "".equals(service.interfaceName())) {
+            if (void.class.equals(service.interfaceClass())&& "".equals(service.interfaceName())) {
                 if (bean.getClass().getInterfaces().length > 0) {
                     serviceConfig.setInterface(bean.getClass().getInterfaces()[0]);
                 } else {

@@ -67,6 +67,10 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
         this.service = null;
     }
 
+    /**
+     * 入口在AnnotationBean.postProcessAfterInitialization
+     * @param service
+     */
     public ServiceBean(Service service) {
         super(service);
         this.service = service;
@@ -78,12 +82,13 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
 
     /**
      * 实现ApplicationContextAware 获得spring容器上下文 applicationContext
+     * 入口在AnnotationBean.postProcessAfterInitialization
      * @param applicationContext
      */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
-        //记录spring上下文，会有多个？分别是什么？
+        //记录spring上下文，会有多个？分别是什么？TODO shiyusen
         SpringExtensionFactory.addApplicationContext(applicationContext);
         if (applicationContext != null) {
             SPRING_CONTEXT = applicationContext;

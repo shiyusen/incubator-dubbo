@@ -193,9 +193,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
     }
 
     /**
-     * TODO 石玉森
-     * 这个方法很有意思
-     * 目前猜测是导出生产者？导导哪？怎么导？
+     * 发布服务
      */
     public synchronized void export() {
         if (provider != null) {

@@ -23,8 +23,14 @@ import org.apache.dubbo.remoting.RemotingException;
 import org.apache.dubbo.remoting.telnet.TelnetHandler;
 import org.apache.dubbo.remoting.transport.ChannelHandlerAdapter;
 
+/**
+ * telnet命令的适配类，将接受到的telnet命令调用其对应的TelnetHandler的具体实现类
+ */
 public class TelnetHandlerAdapter extends ChannelHandlerAdapter implements TelnetHandler {
 
+    /**
+     * ExtensionLoader扩展类加载器，加载TelnetHandler接口的实现类，并实例化
+     */
     private final ExtensionLoader<TelnetHandler> extensionLoader = ExtensionLoader.getExtensionLoader(TelnetHandler.class);
 
     @Override
@@ -48,8 +54,14 @@ public class TelnetHandlerAdapter extends ChannelHandlerAdapter implements Telne
             command = "";
         }
         if (command.length() > 0) {
+            /**
+             * 此方法去加载class类
+             */
             if (extensionLoader.hasExtension(command)) {
                 try {
+                    /**
+                     * 这种实现类似于spring中用Map类注解实例指定接口的实现类，以及设计模式中的策略模式
+                     */
                     String result = extensionLoader.getExtension(command).telnet(channel, message);
                     if (result == null) {
                         return null;

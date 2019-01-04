@@ -29,6 +29,7 @@ import java.lang.reflect.Method;
 
 /**
  * SpringStatusChecker
+ *   返回spring status,并configLocation路径配置
  */
 @Activate
 public class SpringStatusChecker implements StatusChecker {

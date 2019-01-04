@@ -558,6 +558,11 @@ public class ExtensionLoader<T> {
         return clazz;
     }
 
+    /**
+     * 先判断cachedClasses里是否已经加载了
+     * 如果没有加载则去指定的目录下加载class
+     * @return
+     */
     private Map<String, Class<?>> getExtensionClasses() {
         Map<String, Class<?>> classes = cachedClasses.get();
         if (classes == null) {

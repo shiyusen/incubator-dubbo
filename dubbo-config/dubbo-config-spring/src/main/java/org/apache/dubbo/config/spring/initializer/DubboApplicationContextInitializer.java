@@ -32,6 +32,13 @@ import org.springframework.context.ConfigurableApplicationContext;
  */
 public class DubboApplicationContextInitializer implements ApplicationContextInitializer {
 
+    /**
+     * spring容器启动之前
+     * 在web-fragment.xml里注入DubboApplicationContextInitializer
+     * ApplicationContextInitializer是在springboot启动过程(refresh方法前)调用
+     * 此时添加DubboApplicationListener
+     * @param applicationContext
+     */
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
         applicationContext.addApplicationListener(new DubboApplicationListener());

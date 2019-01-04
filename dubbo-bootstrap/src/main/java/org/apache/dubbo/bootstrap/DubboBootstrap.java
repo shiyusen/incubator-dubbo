@@ -67,6 +67,9 @@ public class DubboBootstrap {
         return this;
     }
 
+    /**
+     * 注册钩子和发布服务
+     */
     public void start() {
         if (registerShutdownHookOnStart) {
             registerShutdownHook();
@@ -80,6 +83,9 @@ public class DubboBootstrap {
         }
     }
 
+    /**
+     * 下线服务
+     */
     public void stop() {
         for (ServiceConfig serviceConfig: serviceConfigList) {
             serviceConfig.unexport();
