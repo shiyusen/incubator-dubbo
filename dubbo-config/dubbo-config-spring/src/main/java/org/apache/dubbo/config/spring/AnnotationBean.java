@@ -104,7 +104,6 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
             try {
                 /**
                  * 提取被注解的bean
-                 * TODO 石玉森 查看spring注解的实现原理
                  */
                 // init scanner
                 Class<?> scannerClass = ReflectUtils.forName("org.springframework.context.annotation.ClassPathBeanDefinitionScanner");
@@ -147,6 +146,18 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
         }
     }
 
+    /**
+     * BeanPostProcessor，针对所有Spring上下文中所有的bean，可以在配置文档applicationContext.xml中配置一个BeanPostProcessor，
+     * 然后对所有的bean进行一个初始化之前和之后的代理。
+     * BeanPostProcessor接口中有两个方法： postProcessBeforeInitialization和postProcessAfterInitialization。
+     * postProcessBeforeInitialization方法在bean初始化之前执行，
+     * postProcessAfterInitialization方法在bean初始化之后执行。
+     *
+     * @param bean
+     * @param beanName
+     * @return
+     * @throws BeansException
+     */
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName)
             throws BeansException {
@@ -154,7 +165,7 @@ public class AnnotationBean extends AbstractConfig implements DisposableBean, Be
             return bean;
         }
         /**
-         *
+         * 实例化service
          */
         Service service = bean.getClass().getAnnotation(Service.class);
         if (service != null) {

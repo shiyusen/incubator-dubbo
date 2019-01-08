@@ -26,6 +26,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * SpringContainer. (SPI, Singleton, ThreadSafe)
+ * 启动了spring容器
+ * dubbo框架中的服务提供者运行的container容器
  */
 public class SpringContainer implements Container {
 
@@ -45,6 +47,7 @@ public class SpringContainer implements Container {
             configPath = DEFAULT_SPRING_CONFIG;
         }
         context = new ClassPathXmlApplicationContext(configPath.split("[,\\s]+"), false);
+        //dubbo容器主要做的事都在DubboApplicationListener里，包含注册喝发布服务
         context.addApplicationListener(new DubboApplicationListener());
         context.registerShutdownHook();
         context.refresh();

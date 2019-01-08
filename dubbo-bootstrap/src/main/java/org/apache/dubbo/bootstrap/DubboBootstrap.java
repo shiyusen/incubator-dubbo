@@ -25,6 +25,7 @@ import java.util.List;
 /**
  * A bootstrap class to easily start and stop Dubbo via programmatic API.
  * The bootstrap class will be responsible to cleanup the resources during stop.
+ * dubbo服务启动类
  */
 public class DubboBootstrap {
 
@@ -78,6 +79,9 @@ public class DubboBootstrap {
             // we need to remove it explicitly
             removeShutdownHook();
         }
+        //serviceConfigList 沒有初始化的調用。所以真正的服務發佈并不在此
+        //此處可能只启动了一个空服务
+        //真正的服务发布：org.apache.dubbo.config.spring.ServiceBean
         for (ServiceConfig serviceConfig: serviceConfigList) {
             serviceConfig.export();
         }

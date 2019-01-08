@@ -47,6 +47,10 @@ public class Main {
 
     private static final Condition STOP = LOCK.newCondition();
 
+    /**
+     * 启动脚本start.sh里并没有传参
+     * @param args
+     */
     public static void main(String[] args) {
         try {
             if (args == null || args.length == 0) {
@@ -60,6 +64,9 @@ public class Main {
             }
             logger.info("Use container type(" + Arrays.toString(args) + ") to run dubbo serivce.");
 
+            /**
+             * 当jvm关闭时，会依次执行钩子的实现的方法，执行完后，jvm才正式停止完成
+             */
             if ("true".equals(System.getProperty(SHUTDOWN_HOOK_KEY))) {
                 Runtime.getRuntime().addShutdownHook(new Thread("dubbo-container-shutdown-hook") {
                     @Override

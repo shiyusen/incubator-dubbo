@@ -25,7 +25,7 @@ import org.apache.dubbo.rpc.Protocol;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * dubbo shutdown 之前调用钩子，关闭一下资源
+ * dubbo服务 shutdown 之前调用钩子，关闭一下资源
  * The shutdown hook thread to do the clean up stuff.
  * This is a singleton in order to ensure there is only one shutdown hook registered.
  * Because {@link ApplicationShutdownHooks} use {@link java.util.IdentityHashMap}

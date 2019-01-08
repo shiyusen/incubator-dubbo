@@ -20,6 +20,13 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
+ * dubbo上下文初始化类
+ *
+ * spring容器启动之前
+ * 在web-fragment.xml里注入DubboApplicationContextInitializer
+ * ApplicationContextInitializer是在springboot启动过程(refresh方法前)调用
+ * 此时添加DubboApplicationListener
+ *
  * Automatically register {@link DubboApplicationListener} to Spring context
  * A {@link org.springframework.web.context.ContextLoaderListener} class is defined in
  * src/main/resources/META-INF/web-fragment.xml

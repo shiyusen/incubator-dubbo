@@ -46,10 +46,10 @@ public class AnnotationBeanDefinitionParser extends AbstractSingleBeanDefinition
      * <prev>
      * &lt;dubbo:annotation package="" /&gt;
      * </prev>
-     *
+     * 将ReferenceAnnotationBeanPostProcessor类注册到spring上下文
      * @param element
      * @param parserContext
-     * @param builder
+     * @param builder 创建bean实例的构建者。通过这种方式在spring上下文前后可以动态的创建或修改bean
      */
     @Override
     protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {

@@ -81,14 +81,12 @@ public class ServiceAnnotationBeanPostProcessorTest {
     public static class TestConfiguration {
 
         @Bean
-        public ServiceAnnotationBeanPostProcessor serviceAnnotationBeanPostProcessor
-                (@Value("${packagesToScan}") String... packagesToScan) {
+        public ServiceAnnotationBeanPostProcessor serviceAnnotationBeanPostProcessor (@Value("${packagesToScan}") String... packagesToScan) {
             return new ServiceAnnotationBeanPostProcessor(packagesToScan);
         }
 
         @Bean
-        public ServiceAnnotationBeanPostProcessor serviceAnnotationBeanPostProcessor2
-                (@Value("${packagesToScan}") String... packagesToScan) {
+        public ServiceAnnotationBeanPostProcessor serviceAnnotationBeanPostProcessor2(@Value("${packagesToScan}") String... packagesToScan) {
             return new ServiceAnnotationBeanPostProcessor(packagesToScan);
         }
 

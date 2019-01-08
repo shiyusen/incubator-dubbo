@@ -42,9 +42,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * ServiceFactoryBean
- * 服务配置入口
- * 提取dubbo里的所有配置，发布服务入口
+ * ServiceBean
+ * 每一个服务都会实例化为一个ServiceBean实例 ，
+ * ServiceBean在实例化时会被调用onApplicationEvent方法，此方法里调用了服务的发布接口
  * @export
  */
 public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean, DisposableBean, ApplicationContextAware,
@@ -137,6 +137,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
     /**
      * 实现ApplicationListener ，监听所用通过applicationContext.publistEvent(ApplicationEvent event))发布的事件
      * 在spring启动时bean初始化完成时会调用publistEvent发布事件,只要是实现了ApplicationListener接口的类都可以接收到事件并作出响应
+     * 当spring上下文创建，或者刷新时都会通知调用该方法
      * @param event
      */
     @Override
@@ -146,7 +147,7 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
             if (logger.isInfoEnabled()) {
                 logger.info("The service ready on spring started. service: " + getInterface());
             }
-            //暴漏
+            //暴漏。此处才是真正的服务发布调用入口
             export();
         }
     }
@@ -175,7 +176,6 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
             /**
              * 如果提供者为null，而上下文不为null，则尝试通过BeanFactoryUtils.beansOfTypeIncludingAncestors的方式来获取服务提供者
              * BeanFactoryUtils.beansOfTypeIncludingAncestors 搜集了实现MarkedBizBean接口的类
-             * TODO 石玉森 实现MarkedBizBean接口的类，是在什么时候被加载到spring容器的？
              */
             Map<String, ProviderConfig> providerConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProviderConfig.class, false, false);
             if (providerConfigMap != null && providerConfigMap.size() > 0) {
